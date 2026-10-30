@@ -4,15 +4,27 @@ Script the Endeavour public docs API without hand-built integrations. Built with
 
 ## Install
 
-```sh
-npm install -g endeavour-cli
-```
+The CLI is currently distributed directly from the public GitHub repository.
 
-Or run without installing:
+Run without installing:
 
 ```sh
-npx endeavour-cli docs list
+npx github:krakeflow/endeavour-cli docs list
 ```
+
+Or install it globally from GitHub:
+
+```sh
+npm install -g github:krakeflow/endeavour-cli
+```
+
+Then run:
+
+```sh
+endeavour docs list
+```
+
+> An npm package may be published later once the CLI name and API stabilize.
 
 ## Usage
 
