@@ -1,0 +1,36 @@
+{
+    "name": "endeavour-cli",
+    "version": "0.1.0",
+    "description": "Script the Endeavour public docs API without hand-built integrations.",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/krakeflow/endeavour-cli.git"
+    },
+    "homepage": "https://github.com/krakeflow/endeavour-cli#readme",
+    "type": "module",
+    "bin": {
+        "endeavour": "./dist/endeavour.js"
+    },
+    "files": [
+        "dist",
+        "README.md",
+        "LICENSE"
+    ],
+    "engines": {
+        "node": ">=26"
+    },
+    "scripts": {
+        "build": "tsc -p tsconfig.json && chmod +x dist/endeavour.js",
+        "typecheck": "tsc -p tsconfig.json --noEmit",
+        "smoke": "node ./bin/endeavour.ts docs list",
+        "prepublishOnly": "pnpm build"
+    },
+    "dependencies": {
+        "@effect/platform-node": "4.1.0",
+        "effect": "4.1.0"
+    },
+    "devDependencies": {
+        "typescript": "5.9.2"
+    }
+}
