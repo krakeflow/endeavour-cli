@@ -1,1 +1,157 @@
-{}
+{
+    "plugins": ["unicorn", "typescript", "oxc", "import"],
+    "ignorePatterns": [
+        "dist/",
+        "bun.lock",
+        // Node launcher is hand-written CommonJS, not Effect domain.
+        "bin/endeavour.cjs",
+        // Cross-compile shell script (Bun.$ / process.exit), not Effect domain.
+        // Mirrors harbor ignoring scripts/*.mjs.
+        "script/build.ts"
+    ],
+    "env": {
+        "node": true
+    },
+    "options": {
+        "typeAware": true,
+        "typeCheck": true
+    },
+    "settings": {},
+    "categories": {
+        "correctness": "error",
+        "perf": "error",
+        "restriction": "error",
+        "suspicious": "error",
+        "pedantic": "error"
+    },
+    "rules": {
+        "no-console": "allow",
+        "no-undefined": "allow",
+        "curly": "error",
+        "max-lines": "allow",
+        "no-plusplus": [
+            "error",
+            {
+                "allowForLoopAfterthoughts": true
+            }
+        ],
+        "no-warning-comments": [
+            "allow",
+            {
+                "terms": ["todo"],
+                "location": "start",
+                "decoration": []
+            }
+        ],
+        "no-inline-comments": "allow",
+        "require-unicode-regexp": "allow",
+        "oxc/no-barrel-file": ["error", { "threshold": 0 }],
+        // Effect uses `function*` with Effect.gen that does not always yield.
+        "require-yield": "allow",
+        // Effect nested `function*` closures inherently shadow outer scope.
+        "no-shadow": "allow",
+        // A floating promise in a CLI hides a backend outcome.
+        "typescript/no-floating-promises": "error",
+        // Pedantic type aware rules that fight Effect idioms across the whole codebase.
+        "typescript/prefer-readonly-parameter-types": "allow",
+        "typescript/promise-function-async": "allow",
+        "typescript/strict-void-return": "allow",
+        "typescript/no-confusing-void-expression": "allow",
+        // tsgolint 7.0.2004 does not implement this rule yet and panics on unknown rules.
+        "typescript/no-unsafe-enum-assignment": "allow",
+        // Canonical Effect idiom: branded schema const plus matching type.
+        "eslint/no-redeclare": "allow",
+        // Related Schema.TaggedError classes live together.
+        "eslint/max-classes-per-file": "allow",
+        // Effect discriminated unions branch on `_tag` everywhere.
+        "eslint/no-underscore-dangle": ["error", { "allow": ["_tag"] }],
+        // Opinionated: tiny allowlists read better as arrays.
+        "unicorn/prefer-set-has": "allow",
+        "unicorn/no-array-sort": "allow",
+        // Perf nit over tiny maps.
+        "oxc/no-map-spread": "allow",
+        "effect/no-explicit-any": "error",
+        "effect/no-non-null-assertion": "error",
+        "effect/no-ts-nocheck": "error",
+        "effect/no-disable-validation": "error",
+        "effect/no-raw-throw": "error",
+        "effect/no-built-in-error-constructor": "error",
+        "effect/no-effect-fail-new-error": "error",
+        "effect/no-promise-reject": "error",
+        "effect/no-promise-catch": "error",
+        "effect/no-effect-ignore": "error",
+        "effect/no-silent-error-swallow": "error",
+        "effect/no-json-parse": "error",
+        "effect/no-schema-error-response-leak": "error",
+        "effect/no-unknown-shape-probing": "error",
+        "effect/no-unsupported-effect-api": "error",
+        "effect/no-unknown-runtime-requirements": "error",
+        "effect/no-bare-yield-in-effect-generator": "error",
+        "effect/no-floating-effect-in-generator": "error",
+        "effect/no-return-effect-from-generator": "error",
+        "effect/no-effect-run-in-effect-code": "error"
+    },
+    "overrides": [
+        {
+            "files": ["**/*.ts"],
+            "plugins": ["oxc"],
+            "rules": {
+                "oxc/no-async-await": "allow",
+                "oxc/no-optional-chaining": "allow",
+                "oxc/no-rest-spread-properties": "allow"
+            }
+        },
+        {
+            "files": ["**/*.ts"],
+            "plugins": ["eslint"],
+            "rules": {
+                "eslint/max-depth": ["error", 3],
+                "eslint/max-lines-per-function": "allow",
+                "eslint/max-nested-callbacks": ["error", 5],
+                "no-use-before-define": "allow"
+            }
+        },
+        {
+            "files": ["**/*.ts"],
+            "plugins": ["import"],
+            "rules": {
+                "import/consistent-type-specifier-style": ["error", "prefer-inline"],
+                "import/max-dependencies": "allow",
+                "import/namespace": "error"
+            }
+        },
+        {
+            "files": ["**/*.ts"],
+            "plugins": ["unicorn"],
+            "rules": {
+                "unicorn/no-abusive-eslint-disable": "allow",
+                "unicorn/no-instanceof-builtins": "error",
+                "unicorn/no-nested-ternary": "allow",
+                "unicorn/no-array-reduce": "allow",
+                "unicorn/consistent-function-scoping": "allow"
+            }
+        },
+        {
+            "files": ["**/*.ts"],
+            "plugins": ["typescript"],
+            "rules": {
+                "typescript/array-type": [
+                    "error",
+                    {
+                        "default": "array",
+                        "readonly": "generic"
+                    }
+                ],
+                "typescript/explicit-function-return-type": "allow",
+                "typescript/no-import-type-side-effects": "allow",
+                "typescript/explicit-module-boundary-types": "allow"
+            }
+        }
+    ],
+    "jsPlugins": [
+        {
+            "name": "effect",
+            "specifier": "effect-rules"
+        }
+    ]
+}

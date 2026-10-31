@@ -1,20 +1,3 @@
-[lint]
-typeAware = true
-ignorePatterns = ["dist/", "bun.lock"]
-
-[fmt]
-printWidth = 120
-tabWidth = 4
-ignorePatterns = ["bun.lock", "dist/"]
-
-[[fmt.overrides]]
-files = ["*.json", "*.jsonc"]
-options = { tabWidth = 4, trailingComma = "none" }
-
-[[fmt.overrides]]
-files = ["*.md"]
-options = { printWidth = 100, tabWidth = 2, proseWrap = "always" }
-
-[[fmt.overrides]]
-files = ["*.yml", "*.yaml"]
-options = { tabWidth = 2 }
+# Lint and format options live in .oxlintrc.json and .oxfmtrc.json (harbor-ported).
+# bunfig [lint]/[fmt] would override those files, so they stay empty here on purpose.
+# Docs: https://bun.com/docs/lint https://bun.com/docs/format
