@@ -24,7 +24,8 @@
         "build": "tsc -p tsconfig.json && chmod +x dist/endeavour.js",
         "typecheck": "tsc -p tsconfig.json --noEmit",
         "smoke": "node ./bin/endeavour.ts docs list",
-        "prepublishOnly": "pnpm build"
+        "prepublishOnly": "pnpm build",
+        "compile": "bun build --compile --aot --trim --outfile dist/endeavour ./bin/endeavour.ts"
     },
     "dependencies": {
         "@effect/platform-node": "4.1.0",

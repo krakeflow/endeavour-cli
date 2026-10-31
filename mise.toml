@@ -1,0 +1,6 @@
+# Optional toolchain for the experimental Bun AOT binary (`pnpm compile`).
+# Stable Bun 1.4.4 has no `bun compile`. The canary pin is locked in mise.lock
+# (revision at lock time: 1.4.4-canary.1+da867c60b). Node remains the default runtime.
+# Docs: https://bun.com/docs/compiler/aot
+[tools]
+"github:oven-sh/bun" = "canary"
