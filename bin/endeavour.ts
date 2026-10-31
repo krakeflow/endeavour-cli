@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { NodeRuntime, NodeServices } from "@effect/platform-node"
-import { Console, Effect, FileSystem, Layer, Schema } from "effect"
+import { Console, Effect, FileSystem, Layer, Option, Schema } from "effect"
 import { Argument, Command, Flag } from "effect/cli"
 import { FetchHttpClient, HttpClient, HttpClientRequest, HttpClientResponse } from "effect/http"
 
@@ -30,13 +30,13 @@ const fetchSchema = Effect.fn("fetchSchema")(function* <S extends Schema.Top>(ur
     )
 })
 
-const emit = Effect.fn("emit")(function* (text: string, output: string) {
-    if (output.length === 0) {
+const emit = Effect.fn("emit")(function* (text: string, output: Option.Option<string>) {
+    if (Option.isNone(output)) {
         yield* Console.log(text)
         return
     }
     const fs = yield* FileSystem.FileSystem
-    yield* fs.writeFileString(output, text)
+    yield* fs.writeFileString(output.value, text)
 })
 
 function originOf(baseUrl: string): string {
@@ -95,7 +95,7 @@ const openapi = Command.make(
         output: Flag.String("output").pipe(
             Flag.withAlias("o"),
             Flag.withDescription("Write to FILE instead of stdout"),
-            Flag.withDefault(""),
+            Flag.optional,
         ),
     },
     Effect.fn("openapi")(function* ({ output }) {
