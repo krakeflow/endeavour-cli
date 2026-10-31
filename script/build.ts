@@ -6,21 +6,21 @@
  * Shape mirrors opencode's packages/cli/script/build.ts (optionalDependencies
  * per os/cpu/libc) at the smallest size that fits this CLI.
  */
-import { $ } from "bun";
-import { mkdir, rm } from "node:fs/promises";
-import path from "node:path";
-import pkg from "../package.json";
+import { $ } from "bun"
+import { mkdir, rm } from "node:fs/promises"
+import path from "node:path"
+import pkg from "../package.json"
 
 type Target = {
-    os: "linux" | "darwin" | "win32";
-    arch: "x64" | "arm64";
-    abi?: "musl";
-    avx2?: false;
-};
+    os: "linux" | "darwin" | "win32"
+    arch: "x64" | "arm64"
+    abi?: "musl"
+    avx2?: false
+}
 
-const dir = path.resolve(import.meta.dirname, "..");
-const outdir = path.join(dir, "dist");
-process.chdir(dir);
+const dir = path.resolve(import.meta.dirname, "..")
+const outdir = path.join(dir, "dist")
+process.chdir(dir)
 
 const allTargets: Target[] = [
     { os: "linux", arch: "x64" },
@@ -31,9 +31,9 @@ const allTargets: Target[] = [
     { os: "darwin", arch: "x64" },
     { os: "darwin", arch: "arm64" },
     { os: "win32", arch: "x64" },
-];
+]
 
-const single = process.argv.includes("--single");
+const single = process.argv.includes("--single")
 const targets = single
     ? allTargets.filter(
           (item) =>
@@ -42,26 +42,26 @@ const targets = single
               item.avx2 !== false &&
               item.abi === undefined,
       )
-    : allTargets;
+    : allTargets
 
 if (!targets.length) {
-    throw new Error(`No build target matches ${process.platform}/${process.arch}`);
+    throw new Error(`No build target matches ${process.platform}/${process.arch}`)
 }
 
-await rm(outdir, { recursive: true, force: true });
-await mkdir(outdir, { recursive: true });
+await rm(outdir, { recursive: true, force: true })
+await mkdir(outdir, { recursive: true })
 
 // JS fallback for the Node launcher when platform packages are not installed.
-await $`bunx tsc -p tsconfig.json`;
-await $`chmod +x dist/endeavour.js`;
+await $`bunx tsc -p tsconfig.json`
+await $`chmod +x dist/endeavour.js`
 
 for (const item of targets) {
-    const name = packageName(item);
-    const bunTarget = compileTarget(item);
-    const binDir = path.join(outdir, name, "bin");
-    await mkdir(binDir, { recursive: true });
-    const outfile = path.join(binDir, "endeavour");
-    console.log(`building ${name} (${bunTarget})`);
+    const name = packageName(item)
+    const bunTarget = compileTarget(item)
+    const binDir = path.join(outdir, name, "bin")
+    await mkdir(binDir, { recursive: true })
+    const outfile = path.join(binDir, "endeavour")
+    console.log(`building ${name} (${bunTarget})`)
     const result = await Bun.build({
         entrypoints: ["./bin/endeavour.ts"],
         compile: {
@@ -72,10 +72,10 @@ for (const item of targets) {
             autoloadTsconfig: true,
             autoloadPackageJson: true,
         },
-    });
+    })
     if (!result.success) {
-        for (const log of result.logs) console.error(log);
-        process.exit(1);
+        for (const log of result.logs) console.error(log)
+        process.exit(1)
     }
     await Bun.write(
         path.join(outdir, name, "package.json"),
@@ -94,7 +94,7 @@ for (const item of targets) {
             null,
             4,
         )}\n`,
-    );
+    )
 }
 
 function packageName(item: Target) {
@@ -106,7 +106,7 @@ function packageName(item: Target) {
         item.abi,
     ]
         .filter(Boolean)
-        .join("-");
+        .join("-")
 }
 
 function compileTarget(item: Target) {
@@ -118,7 +118,7 @@ function compileTarget(item: Target) {
         item.abi,
     ]
         .filter(Boolean)
-        .join("-");
+        .join("-")
 }
 
 /** npm selects Linux packages by os, cpu, and libc. Omitting libc installs every libc variant. */
@@ -127,5 +127,5 @@ function platformFields(item: Target) {
         os: [item.os],
         cpu: [item.arch],
         ...(item.os === "linux" ? { libc: [item.abi ?? "glibc"] } : {}),
-    };
+    }
 }
