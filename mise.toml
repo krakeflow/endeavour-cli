@@ -1,0 +1,6 @@
+# Canary Bun: stable 1.4.4 has `bun fmt` but not `bun lint`. A `lint` script on
+# stable recurses forever. Plain `bun build --compile` (default binary build)
+# works on this pin. AOT (`bun run compile:aot`) is opt-in and host-only.
+# Docs: https://bun.com/docs/lint https://bun.com/docs/bundler/executables
+[tools]
+"github:oven-sh/bun" = "canary"

@@ -76,10 +76,7 @@ const read = Command.make(
     },
     Effect.fn("read")(function* ({ id }) {
         const root = yield* endeavour
-        const topic = yield* fetchSchema(
-            `${originOf(root.baseUrl)}/api/docs/${encodeURIComponent(id)}`,
-            DocsTopic,
-        )
+        const topic = yield* fetchSchema(`${originOf(root.baseUrl)}/api/docs/${encodeURIComponent(id)}`, DocsTopic)
         yield* Console.log(topic.markdown ?? JSON.stringify(topic, null, 2))
     }),
 )
