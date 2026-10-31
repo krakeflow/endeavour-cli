@@ -1,0 +1,20 @@
+[lint]
+typeAware = true
+ignorePatterns = ["dist/", "bun.lock"]
+
+[fmt]
+printWidth = 120
+tabWidth = 4
+ignorePatterns = ["bun.lock", "dist/"]
+
+[[fmt.overrides]]
+files = ["*.json", "*.jsonc"]
+options = { tabWidth = 4, trailingComma = "none" }
+
+[[fmt.overrides]]
+files = ["*.md"]
+options = { printWidth = 100, tabWidth = 2, proseWrap = "always" }
+
+[[fmt.overrides]]
+files = ["*.yml", "*.yaml"]
+options = { tabWidth = 2 }

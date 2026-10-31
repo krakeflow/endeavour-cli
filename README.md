@@ -1,10 +1,13 @@
 # endeavour-cli
 
-Script the Endeavour public docs API without hand-built integrations. Built with Effect v4.
+Script the Endeavour public docs API without hand-built integrations. Built with
+Effect v4.
 
 ## Install
 
-The CLI is currently distributed directly from the public GitHub repository.
+The CLI is currently distributed from the public GitHub repository. The install
+runs the Node launcher, which uses a native Bun binary when a matching platform
+package is present and otherwise falls back to the bundled JavaScript.
 
 Run without installing:
 
@@ -24,7 +27,9 @@ Then run:
 endeavour docs list
 ```
 
-> An npm package may be published later once the CLI name and API stabilize.
+> An npm package with per-platform optional dependencies may be published later
+> once the CLI name and API stabilize. Until then, `npx` uses the JavaScript
+> fallback.
 
 ## Usage
 
@@ -38,27 +43,40 @@ Point at prod instead of dev with `--base-url https://app.kevinkraemer.com`.
 
 ## Develop
 
-Requires Node 26 or later. Type stripping runs the TypeScript entry directly, so no build
-step is needed for development. Keep new syntax erasable so `node ./bin/endeavour.ts` keeps
-working without a compiler.
+Requires [Bun](https://bun.com) canary (pinned in `mise.toml`) and Node 26 or later
+for the JavaScript fallback path. Stable Bun 1.4.4 has `bun fmt` but not
+`bun lint`; a `lint` script on stable recurses forever. Type stripping runs the
+TypeScript entry directly.
 
 ```sh
-pnpm install
-pnpm typecheck
-pnpm smoke
+mise install
+bun install
+bun run typecheck
+bun run lint
+bun run fmt:check
+bun run smoke
 ```
 
-`pnpm build` compiles to `dist` for publishing. `prepublishOnly` runs the build automatically.
+`bun run build` cross-compiles plain `bun build --compile` binaries into
+`dist/endeavour-cli-<os>-<arch>[-baseline][-musl]/` and also writes the
+JavaScript fallback at `dist/endeavour.js`. `bun run build:single` builds only
+the host platform package. `bun run build:js` writes only the JavaScript
+fallback.
+
+`bun run lint` and `bun run fmt` use Bun's built-in linter and formatter
+([lint](https://bun.com/docs/lint), [format](https://bun.com/docs/format)).
 
 ### Experimental Bun AOT binary
 
-Optional. Node and `npx` stay the supported install path. [Bun AOT](https://bun.com/docs/compiler/aot) is experimental. It needs the canary Bun pinned in `mise.toml`, because stable 1.4.4 has no real AOT compiler.
+Optional and host-only. The default binary build is plain `--compile`, which
+cross-compiles on stable and canary Bun. [Bun AOT](https://bun.com/docs/compiler/aot)
+is experimental and does not cross-compile.
 
 ```sh
-mise install   # installs canary Bun (locked in mise.lock)
-pnpm compile   # writes dist/endeavour (gitignored)
+bun run compile:aot   # writes dist/endeavour (gitignored)
 ./dist/endeavour --help
 ```
 
-`pnpm compile` runs `bun build --compile --aot --trim --outfile dist/endeavour ./bin/endeavour.ts`. Build on each target platform. AOT does not cross-compile. The locked canary revision is `1.4.4-canary.1+da867c60b`. A real AOT binary is about 60 MB and prints `--help` in about 12 ms. If you see about 100 MB and about 60 ms, the build used a stable Bun and emitted JIT instead.
-
+A real AOT binary is about 60 MB and prints `--help` in about 12 ms on linux
+x64. If you see about 100 MB and about 60 ms, the build emitted a regular
+compiled binary instead of AOT.
