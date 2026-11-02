@@ -22,10 +22,13 @@
         "build": "bun run script/build.ts",
         "build:js": "tsc -p tsconfig.json && chmod +x dist/endeavour.js",
         "build:single": "bun run script/build.ts --single",
+        "check": "bun run fmt:check && bun run lint && bun run typecheck && bun run smoke",
+        "check:signoff": "sh script/signoff.sh",
         "compile:aot": "bun build --compile --aot --trim --outfile dist/endeavour ./bin/endeavour.ts",
         "fmt": "bun fmt --no-script",
         "fmt:check": "bun fmt --check --no-script",
         "lint": "bun lint --no-script",
+        "prepare": "lefthook install || true",
         "prepublishOnly": "bun run build:js",
         "smoke": "bun ./bin/endeavour.ts docs list",
         "typecheck": "tsc -p tsconfig.json --noEmit"
@@ -37,6 +40,7 @@
     "devDependencies": {
         "@types/bun": "1.3.9",
         "effect-rules": "^0.3.6",
+        "lefthook": "^2.2.2",
         "oxlint-tsgolint": "^7.0.2005",
         "typescript": "5.9.2"
     },
