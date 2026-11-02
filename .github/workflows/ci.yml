@@ -1,8 +1,6 @@
 name: ci
 
-# Draft PR note: this drops pull_request and non-main push triggers.
-# Local lefthook pre-push + optional gh signoff become the PR gate.
-# Kevin reviews before merge (workflow edit).
+# PRs are gated locally (lefthook pre-push + gh signoff); CI runs on main.
 
 on:
   push:
