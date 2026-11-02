@@ -48,11 +48,13 @@ stable recurses forever. Type stripping runs the TypeScript entry directly.
 ```sh
 mise install
 bun install
-bun run typecheck
-bun run lint
-bun run fmt:check
-bun run smoke
+bun run check          # fmt, lint, typecheck, smoke (lefthook pre-push)
+bun run check:signoff  # after push: re-check + gh signoff (optional until ruleset)
 ```
+
+Shared CI rules live in captain
+[`docs/agents/ci-gate.md`](https://github.com/krakeflow/captain/blob/main/docs/agents/ci-gate.md).
+Never push with `--no-verify`. Cloud CI runs on `main` and `workflow_dispatch` only.
 
 `bun run build` cross-compiles plain `bun build --compile` binaries into
 `dist/endeavour-cli-<os>-<arch>[-baseline][-musl]/` and also writes the JavaScript fallback at
